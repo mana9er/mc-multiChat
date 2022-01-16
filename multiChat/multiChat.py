@@ -47,6 +47,8 @@ class MultiChatWS(QtCore.QObject):
         self.ws = QWebSocket()
         self.ws_valid = False
         # connect signals and slots
+        self.core.sig_server_start.connect(self.on_server_start)
+        self.core.sig_server_stop.connect(self.on_server_stop)
         self.utils.sig_input.connect(self.on_player_input)
         self.utils.sig_login.connect(self.on_player_login)
         self.utils.sig_logout.connect(self.on_player_logout)
@@ -128,6 +130,26 @@ class MultiChatWS(QtCore.QObject):
             post_str = '[{}]{}'.format(source, content)
             # post to mc server
             self.post(post_str)
+
+    
+    @QtCore.pyqtSlot()
+    def on_server_start(self):
+        self.logger.debug('MultiChat.on_server_start called')
+        if self.lang == 'en':
+            msg = 'The server is starting up...'
+        elif self.lang == 'zh-cn':
+            msg = '服务器正在开启...'
+        self.send_msg(msg)
+
+    
+    @QtCore.pyqtSlot()
+    def on_server_stop(self):
+        self.logger.debug('MultiChat.on_server_stop called')
+        if self.lang == 'en':
+            msg = 'The server has shut down'
+        elif self.lang == 'zh-cn':
+            msg = '服务器已关闭'
+        self.send_msg(msg)
 
 
     @QtCore.pyqtSlot(tuple)

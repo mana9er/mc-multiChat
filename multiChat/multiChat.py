@@ -9,7 +9,6 @@ from PyQt5.QtWebSockets import QWebSocket
 
 RETRY_INTERVAL_MIN = 5000 # 5000ms
 RETRY_INTERVAL_MAX = 3600 * 1000 # 1h
-START_CONNECT_DELAY = 20000
 SUPPORTED_LANGUAGES = ['en', 'zh-cn']
 
 class MultiChatWS(QtCore.QObject):
@@ -59,8 +58,7 @@ class MultiChatWS(QtCore.QObject):
         self.retry_interval = RETRY_INTERVAL_MIN
         self.retry_timer = QtCore.QTimer()
         self.retry_timer.timeout.connect(self.on_retry_timer)
-        self.retry_timer.setInterval(START_CONNECT_DELAY)
-        self.retry_timer.start()
+        self.on_retry_timer()  # open connection using this function
 
 
     def post(self, message):

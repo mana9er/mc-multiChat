@@ -52,6 +52,7 @@ class MultiChatWS(QtCore.QObject):
         self.utils.sig_login.connect(self.on_player_login)
         self.utils.sig_logout.connect(self.on_player_logout)
         self.utils.sig_advancement.connect(self.on_advancement)
+        self.utils.sig_death.connect(self.on_death)
         self.ws.connected.connect(self.on_connected)
         self.ws.textMessageReceived.connect(self.on_recv)
         self.ws.disconnected.connect(self.on_connection_broken)
@@ -180,4 +181,11 @@ class MultiChatWS(QtCore.QObject):
     def on_advancement(self, advc):
         self.logger.debug('MultiChat.on_advancement called')
         msg = advc.format(lang=self.lang)
+        self.send_msg(msg)
+
+    
+    @QtCore.pyqtSlot(object)
+    def on_death(self, death_obj):
+        self.logger.debug('MultiChat.on_death called')
+        msg = death_obj.format(lang=self.lang)
         self.send_msg(msg)

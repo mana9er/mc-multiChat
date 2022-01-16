@@ -1,0 +1,11 @@
+{
+    "multichat-url": "ws://127.0.0.1:6780/",
+    "multichat-key": "password",
+    "server-name": "Survival",
+    "lang": "zh-cn",
+    "listen": true,
+    "post": true,
+    "ignore-prefix": [
+        "!"
+    ]
+}

@@ -31,7 +31,7 @@ class MultiChatWS(QtCore.QObject):
         self.lang = 'en'  # default value
         if 'lang' in config:
             if config['lang'] not in SUPPORTED_LANGUAGES:
-                self.logger.warning('Not supported language: {}'.format(config['lang']))
+                self.logger.warning('Unsupported language: {}'.format(config['lang']))
             else:
                 self.lang = config['lang']
         
@@ -100,7 +100,7 @@ class MultiChatWS(QtCore.QObject):
     @QtCore.pyqtSlot()
     def on_connection_broken(self):
         self.logger.info('Connection broken, retry after ' + str(self.retry_interval) + 'ms')
-        self.utils.tell('@a', 'multichat connection broken, retry after ' + str(self.retry_interval) + 'ms')
+        self.utils.tell('@a', 'multichat connection broken. Retry after ' + str(self.retry_interval) + 'ms')
         self.ws_valid = False
         self.retry_timer.setInterval(self.retry_interval)
         self.retry_timer.start()
@@ -136,7 +136,7 @@ class MultiChatWS(QtCore.QObject):
     def on_server_start(self):
         self.logger.debug('MultiChat.on_server_start called')
         if self.lang == 'en':
-            msg = 'The server is starting up...'
+            msg = 'Server starting up...'
         elif self.lang == 'zh-cn':
             msg = '服务器正在开启...'
         self.send_msg(msg)
@@ -146,7 +146,7 @@ class MultiChatWS(QtCore.QObject):
     def on_server_stop(self):
         self.logger.debug('MultiChat.on_server_stop called')
         if self.lang == 'en':
-            msg = 'The server has shut down'
+            msg = 'Server closed'
         elif self.lang == 'zh-cn':
             msg = '服务器已关闭'
         self.send_msg(msg)
@@ -164,7 +164,7 @@ class MultiChatWS(QtCore.QObject):
             return
         if self.do_listen:
             if player.is_console():
-                # we should not listen to console
+                # we should not listen from console
                 return
             for prefix in self.ignore_prefix:
                 if text.startswith(prefix):

@@ -127,7 +127,7 @@ class MultiChatWS(QtCore.QObject):
         if data['action'] == 'forwarding-message' and self.do_post:
             source = data['source-client-name']
             content = data['content']
-            post_str = '[{}]{}'.format(source, content)
+            post_str = '[{}] {}'.format(source, content)
             # post to mc server
             self.post(post_str)
 

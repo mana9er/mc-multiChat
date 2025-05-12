@@ -62,6 +62,12 @@ class MultiChatWS(QtCore.QObject):
         self.retry_timer.timeout.connect(self.on_retry_timer)
         self.on_retry_timer()  # open connection using this function
 
+        self.commands = {
+            '!multichat connect': self.on_command_connect,
+            '!multichat enable listen': self.on_command_enable_listen,
+            '!multichat disable listen': self.on_command_disable_listen,
+        }
+
 
     def post(self, message):
         self.utils.tell('@a', message, color='#777777')
@@ -81,6 +87,23 @@ class MultiChatWS(QtCore.QObject):
             self.ws.sendTextMessage(data)
         else:
             self.logger.warning('Tried to write websocket when not available')
+
+
+    def on_command_connect(self, player):
+        if self.ws_valid:
+            self.utils.tell(player, 'multichat is already connected to server')
+        else:
+            self.on_retry_timer()
+
+
+    def on_command_enable_listen(self, player):
+        self.do_listen = True
+        self.utils.tell('@a', 'Enable player input listening')
+
+    
+    def on_command_disable_listen(self, player):
+        self.do_listen = False
+        self.utils.tell('@a', 'Disable player input listening')
 
     
     @QtCore.pyqtSlot()
@@ -156,11 +179,8 @@ class MultiChatWS(QtCore.QObject):
     def on_player_input(self, pair):
         self.logger.debug('MultiChat.on_player_input called')
         player, text = pair
-        if text == '!multichat connect':
-            if self.ws_valid:
-                self.utils.tell(player, 'multichat is already connected to server')
-            else:
-                self.on_retry_timer()
+        if text in self.commands:
+            self.commands[text](player)
             return
         if self.do_listen:
             if player.is_console():
